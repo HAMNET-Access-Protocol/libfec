@@ -23,8 +23,14 @@ void *create_viterbi27(int len){
     return create_viterbi27_mmx(len);
   case SSE:
     return create_viterbi27_sse(len);
+#endif
+#if defined __i386__ || defined __x86_64__
   case SSE2:
     return create_viterbi27_sse2(len);
+#endif
+#ifdef __arm__
+  case ARM_NEON:
+	return create_viterbi27_neon(len);
 #endif
   }
 }
@@ -47,9 +53,16 @@ void set_viterbi27_polynomial(int polys[2]){
   case SSE:
     set_viterbi27_polynomial_sse(polys);
     break;
+#endif
+#if defined __i386__ || defined __x86_64__
   case SSE2:
     set_viterbi27_polynomial_sse2(polys);
     break;
+#endif
+#ifdef __arm__
+  case ARM_NEON:
+	set_viterbi27_polynomial_neon(polys);
+	break;
 #endif
   }
 }
@@ -69,8 +82,14 @@ int init_viterbi27(void *p,int starting_state){
       return init_viterbi27_mmx(p,starting_state);
     case SSE:
       return init_viterbi27_sse(p,starting_state);
+#endif
+#if defined __i386__ || defined __x86_64__
     case SSE2:
       return init_viterbi27_sse2(p,starting_state);
+#endif
+#ifdef __arm__
+    case ARM_NEON:
+      return init_viterbi27_neon(p,starting_state);
 #endif
     }
 }
@@ -95,8 +114,14 @@ int chainback_viterbi27(
       return chainback_viterbi27_mmx(p,data,nbits,endstate);
     case SSE:
       return chainback_viterbi27_sse(p,data,nbits,endstate);
+#endif
+#if defined __i386__ || defined __x86_64__
     case SSE2:
       return chainback_viterbi27_sse2(p,data,nbits,endstate);
+#endif
+#ifdef __arm__
+    case ARM_NEON:
+      return chainback_viterbi27_neon(p,data,nbits,endstate);
 #endif
     }
 }
@@ -120,9 +145,15 @@ void delete_viterbi27(void *p){
     case SSE:
       delete_viterbi27_sse(p);
       break;
+#endif
+#if defined __i386__ || defined __x86_64__
     case SSE2:
       delete_viterbi27_sse2(p);
       break;
+#endif
+#ifdef __arm__
+    case ARM_NEON:
+        delete_viterbi27_neon(p);
 #endif
     }
 }
@@ -152,9 +183,15 @@ int update_viterbi27_blk(void *p,unsigned char syms[],int nbits){
   case SSE:
     update_viterbi27_blk_sse(p,syms,nbits);
     break;
+#endif
+#if defined(__i386__) || defined(__x86_64__)
   case SSE2:
     update_viterbi27_blk_sse2(p,syms,nbits);
     break;
+#endif
+#ifdef __arm__
+    case ARM_NEON:
+        update_viterbi27_blk_neon(p,syms,nbits);
 #endif
   }
   return 0;
