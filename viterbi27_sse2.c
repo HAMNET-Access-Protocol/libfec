@@ -8,7 +8,7 @@
 #include "fec.h"
 
 typedef union { unsigned char c[64]; __m128i v[4]; } metric_t;
-typedef union { unsigned long w[2]; unsigned char c[8]; unsigned short s[4]; __m64 v[1];} decision_t;
+typedef union { unsigned int w[2]; unsigned char c[8]; unsigned short s[4]; __m64 v[1];} decision_t;
 union branchtab27 { unsigned char c[32]; __m128i v[2];} Branchtab27_sse2[2];
 static int Init = 0;
 
@@ -118,14 +118,12 @@ void delete_viterbi27_sse2(void *p){
 }
 
 
-#if 0
-/* This code is turned off because it's slower than my hand-crafted assembler in sse2bfly27.s. But it does work. */
-void update_viterbi27_blk_sse2(void *p,unsigned char *syms,int nbits){
+int update_viterbi27_blk_sse2(void *p,unsigned char *syms,int nbits){
   struct v27 *vp = p;
   decision_t *d;
 
   if(p == NULL)
-    return;
+    return -1;
   d = (decision_t *)vp->dp;
   while(nbits--){
     __m128i sym0v,sym1v;
@@ -145,10 +143,10 @@ void update_viterbi27_blk_sse2(void *p,unsigned char *syms,int nbits){
       /* There's no packed bytes right shift in SSE2, so we use the word version and mask
        * (I'm *really* starting to like Altivec...)
        */
-      metric = _mm_srli_epi16(metric,3);
-      metric = _mm_and_si128(metric,_mm_set1_epi8(31));
-      m_metric = _mm_sub_epi8(_mm_set1_epi8(31),metric);
-    
+      metric = _mm_srli_epi16(metric,4);
+      metric = _mm_and_si128(metric,_mm_set1_epi8(15));
+      m_metric = _mm_sub_epi8(_mm_set1_epi8(15),metric);
+
       /* Add branch metrics to path metrics */
       m0 = _mm_add_epi8(vp->old_metrics->v[i],metric);
       m3 = _mm_add_epi8(vp->old_metrics->v[2+i],metric);
@@ -176,5 +174,6 @@ void update_viterbi27_blk_sse2(void *p,unsigned char *syms,int nbits){
     vp->new_metrics = tmp;
   }
   vp->dp = d;
+  return 0;
 }
-#endif
+
