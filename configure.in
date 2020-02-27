@@ -71,8 +71,11 @@ powerpc*)
 	dotprod_av.o sumsq_av.o peakval_av.o cpu_mode_ppc.o"
 	;;
 x86_64*)
-	MLIBS="cpu_mode_unknown.o"
+	MLIBS="viterbi27_sse2.o cpu_mode_x86_64.o"
 	;;
+arm*)
+    MLIBS="viterbi27_neon.o cpu_mode_arm.o"
+    ;;
 *)
 	MLIBS="cpu_mode_unknown.o"
 	;;

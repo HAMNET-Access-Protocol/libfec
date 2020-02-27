@@ -64,7 +64,7 @@ dtest: dtest.o libfec.a
 	gcc -g -o $@ $^ -lm
 
 vtest27: vtest27.o libfec.a
-	gcc -g -o $@ $^ -lm
+	$(CC) -g -o $@ $^ -lm
 
 vtest29: vtest29.o libfec.a
 	gcc -g -o $@ $^ -lm
@@ -83,7 +83,7 @@ rs_speedtest: rs_speedtest.o libfec.a
 
 # for some reason, the test programs without args segfault on the PPC with -O2 optimization. Dunno why - compiler bug?
 vtest27.o: vtest27.c fec.h
-	gcc -g -c $<
+	$(CC) $(CFLAGS) -g -c $<
 
 vtest29.o: vtest29.c fec.h
 	gcc -g -c $<
@@ -196,6 +196,9 @@ viterbi27_sse.o: viterbi27_sse.c fec.h
 viterbi27_sse2.o: viterbi27_sse2.c fec.h
 	$(CC) $(CFLAGS) -msse2 -c -o $@ $<
 
+viterbi27_neon.o: viterbi27_neon.c fec.h
+	$(CC) $(CFLAGS) -mfpu=neon -c -o $@ $<
+
 viterbi29.o: viterbi29.c fec.h
 
 viterbi29_port.o: viterbi29_port.c fec.h
@@ -247,6 +250,9 @@ cpu_mode_unknown.o: cpu_mode_unknown.c fec.h
 
 cpu_mode_ppc.o: cpu_mode_ppc.c fec.h
 
+cpu_mode_x86_x64.o: cpu_mode_x86_64.c fec.h
+
+cpu_mode_arm.o: cpu_mode_arm.c fec.h
 
 clean:
 	rm -f *.o $(SHARED_LIB) *.a rs_speedtest peaktest sumsq_test dtest vtest27 vtest29 vtest39 vtest615 rstest ccsds_tab.c ccsds_tal.c gen_ccsds gen_ccsds_tal core
