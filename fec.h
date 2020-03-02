@@ -43,13 +43,24 @@ int init_viterbi27_sse(void *p,int starting_state);
 int chainback_viterbi27_sse(void *p,unsigned char *data,unsigned int nbits,unsigned int endstate);
 void delete_viterbi27_sse(void *p);
 int update_viterbi27_blk_sse(void *p,unsigned char *syms,int nbits);
+#endif
 
+#if defined(__i386__) || defined(__x86_64__)
 void *create_viterbi27_sse2(int len);
 void set_viterbi27_polynomial_sse2(int polys[2]);
 int init_viterbi27_sse2(void *p,int starting_state);
 int chainback_viterbi27_sse2(void *p,unsigned char *data,unsigned int nbits,unsigned int endstate);
 void delete_viterbi27_sse2(void *p);
 int update_viterbi27_blk_sse2(void *p,unsigned char *syms,int nbits);
+#endif
+
+#ifdef __arm__
+void *create_viterbi27_neon(int len);
+void set_viterbi27_polynomial_neon(int polys[2]);
+int init_viterbi27_neon(void *p,int starting_state);
+int chainback_viterbi27_neon(void *p,unsigned char *data,unsigned int nbits,unsigned int endstate);
+void delete_viterbi27_neon(void *p);
+int update_viterbi27_blk_neon(void *p,unsigned char *syms,int nbits);
 #endif
 
 void *create_viterbi27_port(int len);
@@ -258,7 +269,7 @@ extern unsigned char Taltab[],Tal1tab[];
 
 
 /* CPU SIMD instruction set available */
-extern enum cpu_mode {UNKNOWN=0,PORT,MMX,SSE,SSE2,ALTIVEC} Cpu_mode;
+extern enum cpu_mode {UNKNOWN=0,PORT,MMX,SSE,SSE2,ALTIVEC, ARM_NEON} Cpu_mode;
 void find_cpu_mode(void); /* Call this once at startup to set Cpu_mode */
 
 /* Determine parity of argument: 1 = odd, 0 = even */
