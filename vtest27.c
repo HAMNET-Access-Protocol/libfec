@@ -12,6 +12,7 @@
 #include <getopt.h>
 #endif
 #include "fec.h"
+#include "sim.c"
 
 #if HAVE_GETOPT_LONG
 struct option Options[] = {
